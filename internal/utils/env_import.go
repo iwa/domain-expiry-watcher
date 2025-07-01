@@ -40,6 +40,8 @@ func importDomains(appState *state.AppState) {
 	if len(appState.Domains) == 0 {
 		panic("[ERROR] No valid domains found in the DOMAINS environment variable.")
 	}
+
+	println("[INFO] Imported domains:", len(appState.Domains))
 }
 
 func importTelegramConfig(appState *state.AppState) {
