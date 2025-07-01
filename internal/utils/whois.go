@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	state "github.com/iwa/domain-expiry-watcher/internal/struct"
+	"github.com/iwa/domain-expiry-watcher/internal/state"
 )
 
 func UpdateDomains(appState *state.AppState) {

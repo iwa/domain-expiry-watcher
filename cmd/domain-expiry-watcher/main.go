@@ -1,7 +1,7 @@
 package main
 
 import (
-	state "github.com/iwa/domain-expiry-watcher/internal/struct"
+	"github.com/iwa/domain-expiry-watcher/internal/state"
 	"github.com/iwa/domain-expiry-watcher/internal/utils"
 )
 
