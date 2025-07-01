@@ -36,6 +36,10 @@ func importDomains(appState *state.AppState) {
 			ExpiryDate: time.Unix(0, 0), // Default expiry date
 		}
 	}
+
+	if len(appState.Domains) == 0 {
+		panic("[ERROR] No valid domains found in the DOMAINS environment variable.")
+	}
 }
 
 func importTelegramConfig(appState *state.AppState) {
