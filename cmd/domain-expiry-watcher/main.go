@@ -1,9 +1,14 @@
 package main
 
-import internal "github.com/iwa/domain-expiry-watcher/internal/struct"
+import (
+	state "github.com/iwa/domain-expiry-watcher/internal/struct"
+	"github.com/iwa/domain-expiry-watcher/internal/utils"
+)
 
 func main() {
 	println(" --- Domain Expiry Watcher ---")
 
-	appState := internal.GetInstance()
+	appState := state.GetInstance()
+
+	utils.ImportEnv(appState)
 }
