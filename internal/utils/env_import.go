@@ -10,6 +10,7 @@ import (
 
 func ImportEnv(appState *state.AppState) {
 	importDomains(appState)
+	importTelegramConfig(appState)
 }
 
 func importDomains(appState *state.AppState) {
@@ -34,5 +35,15 @@ func importDomains(appState *state.AppState) {
 			Name:       domain,
 			ExpiryDate: time.Unix(0, 0), // Default expiry date
 		}
+	}
+}
+
+func importTelegramConfig(appState *state.AppState) {
+	appState.TelegramNotification = os.Getenv("TELEGRAM_NOTIFICATION") == "true"
+	appState.TelegramChatID = os.Getenv("TELEGRAM_CHAT_ID")
+	appState.TelegramToken = os.Getenv("TELEGRAM_TOKEN")
+
+	if appState.TelegramNotification && (appState.TelegramChatID == "" || appState.TelegramToken == "") {
+		panic("[ERROR] Telegram notification is enabled but chat ID or token is not set.")
 	}
 }
