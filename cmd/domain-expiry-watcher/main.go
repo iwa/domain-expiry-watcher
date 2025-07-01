@@ -13,4 +13,6 @@ func main() {
 	utils.ImportEnv(appState)
 
 	println("[INFO] Starting domain expiry watcher...")
+
+	utils.UpdateDomains(appState)
 }
