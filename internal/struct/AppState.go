@@ -6,3 +6,13 @@ type AppState struct {
 	TelegramChatID       string
 	TelegramToken        string
 }
+
+var instance *AppState
+
+func init() {
+	instance = &AppState{}
+}
+
+func GetInstance() *AppState {
+	return instance
+}
