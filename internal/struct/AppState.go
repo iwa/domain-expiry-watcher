@@ -1,7 +1,7 @@
 package internal
 
 type AppState struct {
-	Domains              []Domain
+	Domains              map[string]Domain
 	TelegramNotification bool
 	TelegramChatID       string
 	TelegramToken        string
