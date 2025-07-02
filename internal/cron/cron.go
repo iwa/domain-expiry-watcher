@@ -25,7 +25,7 @@ func StartCronLoop() {
 
 					utils.UpdateDomains(appState)
 
-					// should notify
+					utils.Notify(appState)
 				}
 			}
 		}

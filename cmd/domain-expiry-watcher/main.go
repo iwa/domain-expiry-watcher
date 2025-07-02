@@ -17,6 +17,8 @@ func main() {
 
 	utils.UpdateDomains(appState)
 
+	utils.Notify(appState)
+
 	cron.StartCronLoop()
 
 	select {} // Keep the main goroutine running
