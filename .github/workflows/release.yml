@@ -1,5 +1,9 @@
 name: Release flow on tag push
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: iwa/domain-expiry-watcher
+
 on:
   push:
     tags:
