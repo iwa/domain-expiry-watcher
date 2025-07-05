@@ -21,14 +21,19 @@ jobs:
       with:
         go-version: '1.24'
 
-    - name: Build
-      run: CGO_ENABLED=0 GOOS=linux go build -o domain-expiry-watcher-linux-x86 ./cmd/domain-expiry-watcher/main.go
+    - name: Build for Linux x86
+      run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o domain-expiry-watcher-linux-x86 ./cmd/domain-expiry-watcher/main.go
 
-    - name: Upload binary as artifact
+    - name: Build for Linux ARM64
+      run: CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o domain-expiry-watcher-linux-arm64 ./cmd/domain-expiry-watcher/main.go
+
+    - name: Upload binaries as artifact
       uses: actions/upload-artifact@v4
       with:
         name: app-linux-binary
-        path: ./domain-expiry-watcher-linux-x86
+        path: |
+          ./domain-expiry-watcher-linux-x86
+          ./domain-expiry-watcher-linux-arm64
 
   build_docker:
     runs-on: ubuntu-latest
@@ -52,7 +57,7 @@ jobs:
       with:
         context: .
         push: true
-        platforms: linux/amd64
+        platforms: linux/amd64, linux/arm64
         tags: |
           ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.VERSION }}
@@ -67,7 +72,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download Linux binary artifact
+      - name: Download Linux binaries artifact
         uses: actions/download-artifact@v4
         with:
           name: app-linux-binary
@@ -109,9 +114,10 @@ jobs:
             --notes-file CHANGELOG.md \
             --draft
 
-      - name: Upload Linux binary to release
+      - name: Upload Linux binaries to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           tag="${GITHUB_REF#refs/tags/}"
           gh release upload "$tag" ./binary/domain-expiry-watcher-linux-x86
+          gh release upload "$tag" ./binary/domain-expiry-watcher-linux-arm64
