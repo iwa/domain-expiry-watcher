@@ -17,6 +17,8 @@ func main() {
 
 	utils.UpdateDomains(appState)
 
+	utils.ReportStatusOnCLI(appState)
+
 	utils.Notify(appState)
 
 	cron.StartCronLoop()
