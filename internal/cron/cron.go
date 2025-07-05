@@ -27,7 +27,7 @@ func StartCronLoop() {
 
 					utils.Notify(appState)
 
-					utils.ReportStatusOnCLI(appState)
+					utils.ReportStatusInConsole(appState)
 				}
 			}
 		}

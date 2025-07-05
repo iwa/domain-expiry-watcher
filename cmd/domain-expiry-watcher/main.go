@@ -17,7 +17,7 @@ func main() {
 
 	utils.UpdateDomains(appState)
 
-	utils.ReportStatusOnCLI(appState)
+	utils.ReportStatusInConsole(appState)
 
 	utils.Notify(appState)
 

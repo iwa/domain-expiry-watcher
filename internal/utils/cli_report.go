@@ -6,7 +6,7 @@ import (
 	"github.com/iwa/domain-expiry-watcher/internal/state"
 )
 
-func ReportStatusOnCLI(appState *state.AppState) {
+func ReportStatusInConsole(appState *state.AppState) {
 	println("[INFO] Generating domains report...")
 
 	println("\n --- Current Domains Status ---")
