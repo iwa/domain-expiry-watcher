@@ -42,8 +42,6 @@ func checkDaysForNotification(expriyDate time.Time) (DaysUntil, bool) {
 	currentTime := time.Now()
 	daysLeft := int(expriyDate.Sub(currentTime).Hours()/24) + 1 // Add 1 to include the current day
 
-	println("[DEBUG] daysLeft:", daysLeft, "Expiry Date:", expriyDate.Format("2006-01-02 15:04:05"))
-
 	switch daysLeft {
 	case 30:
 		println("[INFO] Domain expiry is exactly 30 days:", expriyDate.Format("2006-01-02 15:04:05"))
