@@ -11,6 +11,7 @@ import (
 func ImportEnv(appState *state.AppState) {
 	importDomains(appState)
 	importTelegramConfig(appState)
+	importDiscordConfig(appState)
 }
 
 func importDomains(appState *state.AppState) {
@@ -51,5 +52,14 @@ func importTelegramConfig(appState *state.AppState) {
 
 	if appState.TelegramNotification && (appState.TelegramChatID == "" || appState.TelegramToken == "") {
 		panic("[ERROR] Telegram notification is enabled but chat ID or token is not set.")
+	}
+}
+
+func importDiscordConfig(appState *state.AppState) {
+	appState.DiscordNotification = os.Getenv("DISCORD_NOTIFICATION") == "true"
+	appState.DiscordWebhookURL = os.Getenv("DISCORD_WEBHOOK_URL")
+
+	if appState.DiscordNotification && appState.DiscordWebhookURL == "" {
+		panic("[ERROR] Discord notification is enabled but webhook URL is not set.")
 	}
 }

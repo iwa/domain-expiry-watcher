@@ -1,10 +1,14 @@
 package state
 
 type AppState struct {
-	Domains              map[string]Domain
+	Domains map[string]Domain
+
 	TelegramNotification bool
 	TelegramChatID       string
 	TelegramToken        string
+
+	DiscordNotification bool
+	DiscordWebhookURL   string
 }
 
 var instance *AppState
