@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -12,7 +13,7 @@ import (
 
 func ImportEnv(appState *state.AppState) {
 	importDomains(appState)
-	importConfig(appState)
+	importNotificationDaysConfig(appState)
 	importTelegramConfig(appState)
 	importDiscordConfig(appState)
 }
@@ -48,7 +49,7 @@ func importDomains(appState *state.AppState) {
 	println("[INFO] Imported domains:", len(appState.Domains))
 }
 
-func importConfig(appState *state.AppState) {
+func importNotificationDaysConfig(appState *state.AppState) {
 	daysEnv := os.Getenv("NOTIFICATION_DAYS")
 
 	if daysEnv == "" {
@@ -62,14 +63,33 @@ func importConfig(appState *state.AppState) {
 			panic("[ERROR] No valid days found in NOTIFICATION_DAYS environment variable.")
 		}
 
-		appState.NotificationDays = make([]int, len(daysStr))
-		for i, day := range daysStr {
-			var err error
-			appState.NotificationDays[i], err = strconv.Atoi(strings.TrimSpace(day))
+		appState.NotificationDays = make([]int, 0, len(daysStr))
+		for _, day := range daysStr {
+			value, err := strconv.Atoi(strings.TrimSpace(day))
+
 			if err != nil {
 				panic("[ERROR] Invalid value in NOTIFICATION_DAYS environment variable: " + day)
 			}
+
+			if value <= 0 {
+				panic("[ERROR] Notification days must be greater than 0: " + day)
+			}
+
+			// Check for duplicates in the slice
+			alreadyExists := false
+			for j := range len(appState.NotificationDays) {
+				if appState.NotificationDays[j] == value {
+					alreadyExists = true
+					break
+				}
+			}
+
+			if !alreadyExists {
+				appState.NotificationDays = append(appState.NotificationDays, value)
+			}
 		}
+
+		slices.Sort(appState.NotificationDays)
 
 		fmt.Println("[INFO] Notification will be sent this many days before expiry:", appState.NotificationDays)
 	}
