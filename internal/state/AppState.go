@@ -11,13 +11,3 @@ type AppState struct {
 	DiscordNotification bool
 	DiscordWebhookURL   string
 }
-
-var instance *AppState
-
-func init() {
-	instance = &AppState{}
-}
-
-func GetInstance() *AppState {
-	return instance
-}

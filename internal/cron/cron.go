@@ -7,10 +7,9 @@ import (
 	"github.com/iwa/domain-expiry-watcher/internal/utils"
 )
 
-func StartCronLoop() {
+func StartCronLoop(appState *state.AppState) {
 	println("[INFO] Starting cron job...")
 
-	appState := state.GetInstance()
 	ticker := time.NewTicker(time.Hour)
 	done := make(chan bool)
 

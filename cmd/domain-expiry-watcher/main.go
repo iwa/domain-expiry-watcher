@@ -9,19 +9,19 @@ import (
 func main() {
 	println(" --- Domain Expiry Watcher ---")
 
-	appState := state.GetInstance()
+	appState := state.AppState{}
 
-	utils.ImportEnv(appState)
+	utils.ImportEnv(&appState)
 
 	println("[INFO] Starting domain expiry watcher...")
 
-	utils.UpdateDomains(appState)
+	utils.UpdateDomains(&appState)
 
-	utils.ReportStatusInConsole(appState)
+	utils.ReportStatusInConsole(&appState)
 
-	utils.Notify(appState)
+	utils.Notify(&appState)
 
-	cron.StartCronLoop()
+	cron.StartCronLoop(&appState)
 
 	select {} // Keep the main goroutine running
 }
