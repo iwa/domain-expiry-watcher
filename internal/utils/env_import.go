@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -10,6 +12,7 @@ import (
 
 func ImportEnv(appState *state.AppState) {
 	importDomains(appState)
+	importConfig(appState)
 	importTelegramConfig(appState)
 	importDiscordConfig(appState)
 }
@@ -43,6 +46,33 @@ func importDomains(appState *state.AppState) {
 	}
 
 	println("[INFO] Imported domains:", len(appState.Domains))
+}
+
+func importConfig(appState *state.AppState) {
+	daysEnv := os.Getenv("NOTIFICATION_DAYS")
+
+	if daysEnv == "" {
+		appState.NotificationDays = []int{30, 15, 7, 1} // Default values
+		println("[INFO] No NOTIFICATION_DAYS environment variable found, using default values...")
+		fmt.Println("[INFO] Notification will be sent this many days before expiry:", appState.NotificationDays)
+	} else {
+		daysStr := strings.Split(daysEnv, ",")
+
+		if len(daysStr) == 0 {
+			panic("[ERROR] No valid days found in NOTIFICATION_DAYS environment variable.")
+		}
+
+		appState.NotificationDays = make([]int, len(daysStr))
+		for i, day := range daysStr {
+			var err error
+			appState.NotificationDays[i], err = strconv.Atoi(strings.TrimSpace(day))
+			if err != nil {
+				panic("[ERROR] Invalid value in NOTIFICATION_DAYS environment variable: " + day)
+			}
+		}
+
+		fmt.Println("[INFO] Notification will be sent this many days before expiry:", appState.NotificationDays)
+	}
 }
 
 func importTelegramConfig(appState *state.AppState) {

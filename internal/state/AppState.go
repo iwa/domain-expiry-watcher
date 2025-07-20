@@ -1,7 +1,8 @@
 package state
 
 type AppState struct {
-	Domains map[string]Domain
+	Domains          map[string]Domain
+	NotificationDays []int
 
 	TelegramNotification bool
 	TelegramChatID       string
