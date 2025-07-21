@@ -3,10 +3,10 @@
 Console application which checks domain name date expiry, with notification support.
 
 - Set your list of watched domains
-- Checks daily for the expiration date
+- Checks daily for the expiration date at midnight
 - Automatically determine the right WHOIS server to query
-- Sends a notification 30 days, 14 days and 7 days before expiry
-- Supports Telegram notification
+- Sends notifications on selected days prior to expiry
+- Supports Telegram & Discord notification
 
 ## Config
 
@@ -22,7 +22,12 @@ Everything in this app is configurable through env vars:
 
 ```dotenv
 DOMAINS="google.com,example.org"
+NOTIFICATION_DAYS="30,14,7,1"
+
 TELEGRAM_NOTIFICATION="true"
 TELEGRAM_CHAT_ID="..."
 TELEGRAM_TOKEN="..."
+
+DISCORD_NOTIFICATION="true"
+DISCORD_WEBHOOK_URL="..."
 ```
