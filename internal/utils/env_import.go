@@ -12,10 +12,16 @@ import (
 )
 
 func ImportEnv(appState *state.AppState) {
+	println("[INFO] ╭───────────────────────────────────────────────────────────────╮")
+	println("[INFO] │ Configuration from environment variables...                   │")
+	println("[INFO] ├───────────────────────────────────────────────────────────────┤")
+
 	importDomains(appState)
 	importNotificationDaysConfig(appState)
 	importTelegramConfig(appState)
 	importDiscordConfig(appState)
+
+	println("[INFO] ╰───────────────────────────────────────────────────────────────╯")
 }
 
 func importDomains(appState *state.AppState) {
@@ -46,7 +52,7 @@ func importDomains(appState *state.AppState) {
 		panic("[ERROR] No valid domains found in the DOMAINS environment variable.")
 	}
 
-	println("[INFO] Imported domains:", len(appState.Domains))
+	println("[INFO] │ Imported domains:", len(appState.Domains))
 }
 
 func importNotificationDaysConfig(appState *state.AppState) {
@@ -54,8 +60,8 @@ func importNotificationDaysConfig(appState *state.AppState) {
 
 	if daysEnv == "" {
 		appState.NotificationDays = []int{30, 15, 7, 1} // Default values
-		println("[INFO] No NOTIFICATION_DAYS environment variable found, using default values...")
-		fmt.Println("[INFO] Notification will be sent this many days before expiry:", appState.NotificationDays)
+		println("[INFO] │ No NOTIFICATION_DAYS environment variable found, using default values...")
+		fmt.Println("[INFO] │ Notification will be sent this many days before expiry:", appState.NotificationDays)
 	} else {
 		daysStr := strings.Split(daysEnv, ",")
 
@@ -91,7 +97,7 @@ func importNotificationDaysConfig(appState *state.AppState) {
 
 		slices.Sort(appState.NotificationDays)
 
-		fmt.Println("[INFO] Notification will be sent this many days before expiry:", appState.NotificationDays)
+		fmt.Println("[INFO] │ Notification will be sent this many days before expiry:", appState.NotificationDays)
 	}
 }
 
@@ -103,6 +109,10 @@ func importTelegramConfig(appState *state.AppState) {
 	if appState.TelegramNotification && (appState.TelegramChatID == "" || appState.TelegramToken == "") {
 		panic("[ERROR] Telegram notification is enabled but chat ID or token is not set.")
 	}
+
+	if appState.TelegramNotification && appState.TelegramChatID != "" && appState.TelegramToken != "" {
+		println("[INFO] │ Telegram notification enabled to channel", appState.TelegramChatID)
+	}
 }
 
 func importDiscordConfig(appState *state.AppState) {
@@ -111,5 +121,9 @@ func importDiscordConfig(appState *state.AppState) {
 
 	if appState.DiscordNotification && appState.DiscordWebhookURL == "" {
 		panic("[ERROR] Discord notification is enabled but webhook URL is not set.")
+	}
+
+	if appState.DiscordNotification && appState.DiscordWebhookURL != "" {
+		println("[INFO] │ Discord notification enabled to webhook", appState.DiscordWebhookURL)
 	}
 }
