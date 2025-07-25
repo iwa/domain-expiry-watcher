@@ -13,10 +13,12 @@ Console application which checks domain name date expiry, with notification supp
 Everything in this app is configurable through env vars:
 
 - `DOMAINS` **required**, comma-separated list of the domains to be watched
+- `NOTIFICATION_DAYS`, comma-separated list of number of days before expiry notifications should be sent on
 - `TELEGRAM_NOTIFICATION`, set to `true` if you want to enable Telegram notifiation
 - `TELEGRAM_CHAT_ID`, Telegram chat id to send notifications to
 - `TELEGRAM_TOKEN`, Telegram bot token
-
+- `DISCORD_NOTIFICATION`, set to `true` if you want to enable Discord notifiation
+- `DISCORD_WEBHOOK_URL`, Discord webhook to send notifications to
 
 ## Example
 
