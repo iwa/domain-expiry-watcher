@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func StatusHandler(w http.ResponseWriter, r *http.Request) {
+func HealthHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		return
 	}
