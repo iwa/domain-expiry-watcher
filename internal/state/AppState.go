@@ -11,3 +11,14 @@ type AppState struct {
 	DiscordNotification bool
 	DiscordWebhookURL   string
 }
+
+var instance AppState
+
+// Initialize the singleton instance when the package is loaded
+func init() {
+	instance = AppState{}
+}
+
+func GetInstance() *AppState {
+	return &instance
+}

@@ -12,22 +12,22 @@ import (
 func main() {
 	println(" --- Domain Expiry Watcher ---")
 
-	appState := state.AppState{}
+	appState := state.GetInstance()
 
-	utils.ImportEnv(&appState)
+	utils.ImportEnv(appState)
 
 	println("[INFO] Starting domain expiry watcher...")
 
-	utils.UpdateDomains(&appState)
+	utils.UpdateDomains(appState)
 
-	utils.ReportStatusInConsole(&appState)
+	utils.ReportStatusInConsole(appState)
 
-	utils.Notify(&appState)
+	utils.Notify(appState)
 
 	http.HandleFunc("/health", api.HealthHandler)
 	go http.ListenAndServe("0.0.0.0:8080", nil)
 
-	cron.StartCronLoop(&appState)
+	cron.StartCronLoop(appState)
 
 	select {} // Keep the main goroutine running
 }
