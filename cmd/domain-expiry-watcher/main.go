@@ -25,6 +25,7 @@ func main() {
 	utils.Notify(appState)
 
 	http.HandleFunc("/health", api.HealthHandler)
+	http.HandleFunc("/status", api.StatusHandler)
 	go http.ListenAndServe("0.0.0.0:8080", nil)
 
 	cron.StartCronLoop(appState)
