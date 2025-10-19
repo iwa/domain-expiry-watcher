@@ -8,23 +8,36 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/table"
 	"github.com/iwa/domain-expiry-watcher/internal/state"
 )
 
 func ImportEnv(appState *state.AppState) {
-	println("[INFO] ╭───────────────────────────────────────────────────────────────╮")
-	println("[INFO] │ Configuration from environment variables...                   │")
-	println("[INFO] ├───────────────────────────────────────────────────────────────┤")
+	t := table.New().
+		Border(lipgloss.RoundedBorder()).
+		BorderStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("#7D56F4"))).
+		StyleFunc(func(row, col int) lipgloss.Style {
+			switch {
+			case row == table.HeaderRow:
+				return lipgloss.NewStyle().Bold(true).Align(lipgloss.Center)
+			default:
+				return lipgloss.NewStyle()
+			}
+		}).
+		Headers(" Configuration from environment variables ")
 
-	importDomains(appState)
-	importNotificationDaysConfig(appState)
+	t.Row(importDomains(appState))
+	t.Row(importNotificationDaysConfig(appState))
 	importTelegramConfig(appState)
 	importDiscordConfig(appState)
 
-	println("[INFO] ╰───────────────────────────────────────────────────────────────╯")
+	fmt.Println(t)
 }
 
-func importDomains(appState *state.AppState) {
+func importDomains(appState *state.AppState) string {
+	log := ""
+
 	domainsEnv := os.Getenv("DOMAINS")
 	if domainsEnv == "" {
 		panic("[ERROR] No domains provided. Please set the DOMAINS environment variable as comma-separated values.")
@@ -38,7 +51,7 @@ func importDomains(appState *state.AppState) {
 	appState.Domains = make(map[string]state.Domain, len(domains))
 	for _, domain := range domains {
 		if domain == "" {
-			println("[WARN] Empty domain found in the DOMAINS environment variable, skipping.")
+			log = fmt.Sprintln(log, "[WARN] Empty domain found in the DOMAINS environment variable, skipping.")
 			continue
 		}
 
@@ -52,16 +65,20 @@ func importDomains(appState *state.AppState) {
 		panic("[ERROR] No valid domains found in the DOMAINS environment variable.")
 	}
 
-	println("[INFO] │ Imported domains:", len(appState.Domains))
+	log = fmt.Sprintln(log, "Imported domains:", len(appState.Domains))
+
+	return log
 }
 
-func importNotificationDaysConfig(appState *state.AppState) {
+func importNotificationDaysConfig(appState *state.AppState) string {
+	log := ""
+
 	daysEnv := os.Getenv("NOTIFICATION_DAYS")
 
 	if daysEnv == "" {
 		appState.NotificationDays = []int{30, 15, 7, 1} // Default values
-		println("[INFO] │ No NOTIFICATION_DAYS environment variable found, using default values...")
-		fmt.Println("[INFO] │ Notification will be sent this many days before expiry:", appState.NotificationDays)
+		log = fmt.Sprintln(log, "No NOTIFICATION_DAYS environment variable found, using default values...")
+		log = fmt.Sprintln(log, fmt.Sprint("Notification will be sent this many days before expiry: ", appState.NotificationDays))
 	} else {
 		daysStr := strings.Split(daysEnv, ",")
 
@@ -97,8 +114,10 @@ func importNotificationDaysConfig(appState *state.AppState) {
 
 		slices.Sort(appState.NotificationDays)
 
-		fmt.Println("[INFO] │ Notification will be sent this many days before expiry:", appState.NotificationDays)
+		log = fmt.Sprintln(log, fmt.Sprint("Notification will be sent this many days before expiry:", appState.NotificationDays))
 	}
+
+	return log
 }
 
 func importTelegramConfig(appState *state.AppState) {

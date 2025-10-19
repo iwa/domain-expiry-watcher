@@ -1,16 +1,29 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/iwa/domain-expiry-watcher/internal/api"
 	"github.com/iwa/domain-expiry-watcher/internal/cron"
 	"github.com/iwa/domain-expiry-watcher/internal/state"
 	"github.com/iwa/domain-expiry-watcher/internal/utils"
 )
 
+var titleStyle = lipgloss.NewStyle().
+	Bold(true).
+	Foreground(lipgloss.Color("#FAFAFA")).
+	PaddingTop(1).
+	PaddingBottom(1).
+	PaddingLeft(4).
+	PaddingRight(4).
+	MarginLeft(7).
+	BorderStyle(lipgloss.RoundedBorder()).
+	BorderForeground(lipgloss.Color("#7D56F4"))
+
 func main() {
-	println(" --- Domain Expiry Watcher ---")
+	fmt.Println(titleStyle.Render("Domain Expiry Watcher"))
 
 	appState := state.GetInstance()
 
