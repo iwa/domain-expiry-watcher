@@ -31,6 +31,7 @@ func ImportEnv(appState *state.AppState) {
 	t.Row(importNotificationDaysConfig(appState))
 	importTelegramConfig(appState)
 	importDiscordConfig(appState)
+	importNtfyConfig(appState)
 
 	fmt.Println(t)
 }
@@ -144,5 +145,18 @@ func importDiscordConfig(appState *state.AppState) {
 
 	if appState.DiscordNotification && appState.DiscordWebhookURL != "" {
 		println("[INFO] │ Discord notification enabled to webhook", appState.DiscordWebhookURL)
+	}
+}
+
+func importNtfyConfig(appState *state.AppState) {
+	appState.NtfyNotification = os.Getenv("NTFY_NOTIFICATION") == "true"
+	appState.NtfyURL = os.Getenv("NTFY_URL")
+
+	if appState.NtfyNotification && appState.NtfyURL == "" {
+		panic("[ERROR] Ntfy notification is enabled but webhook URL is not set.")
+	}
+
+	if appState.NtfyNotification && appState.NtfyURL != "" {
+		println("[INFO] Ntfy notification enabled to webhook", appState.NtfyURL)
 	}
 }

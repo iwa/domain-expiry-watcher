@@ -23,6 +23,15 @@ func Notify(appState *state.AppState) {
 					println("[ERROR] Failed to send notification for domain", domain, ":", err)
 				}
 			}
+
+			if appState.NtfyNotification && appState.NtfyURL != "" {
+				message := fmt.Sprintf("Domain %s will expire in %d days \nExpiry date: %s", domain, daysUntil, domainData.ExpiryDate.Format("2006-01-02 15:04:05"))
+
+				err := providers.SendNtfyMessage(appState, message)
+				if err != nil {
+					println("[ERROR] Failed to send notification for domain", domain, ":", err)
+				}
+			}
 		}
 	}
 }

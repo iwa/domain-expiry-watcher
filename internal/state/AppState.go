@@ -10,6 +10,9 @@ type AppState struct {
 
 	DiscordNotification bool
 	DiscordWebhookURL   string
+
+	NtfyNotification bool
+	NtfyURL          string
 }
 
 var instance AppState
