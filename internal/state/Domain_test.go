@@ -5,44 +5,49 @@ import (
 	"time"
 )
 
-func TestDomainGetDaysUntilExpiryShouldReturnCorrectValue(t *testing.T) {
-	domain := Domain{
-		Name:       "example.org",
-		Exists:     true,
-		ExpiryDate: time.Now().Add(30 * 24 * time.Hour), // 30 days after now
+func TestDomainGetDaysUntilExpiry(t *testing.T) {
+	tests := []struct {
+		description string
+		domain      Domain
+		expected    int
+	}{
+		{
+			"should return correct value",
+			Domain{
+				Name:       "example.org",
+				Exists:     true,
+				ExpiryDate: time.Now().Add(30 * 24 * time.Hour), // 30 days after now
+			},
+			30,
+		},
+		{
+			"should return zero on expiry day",
+			Domain{
+				Name:       "example.org",
+				Exists:     true,
+				ExpiryDate: time.Now(),
+			},
+			0,
+		},
+		{
+			"should return -1 for expired domain",
+			Domain{
+				Name:       "example.org",
+				Exists:     true,
+				ExpiryDate: time.Now().Add(-1 * 30 * 24 * time.Hour), // 30 days before now
+			},
+			-1,
+		},
 	}
 
-	result := domain.GetDaysUntilExpiry()
+	for _, tt := range tests {
 
-	if result != 30 {
-		t.Fatal("wrong result, got", result, "instead of 30")
-	}
-}
+		t.Run(tt.description, func(t *testing.T) {
+			result := tt.domain.GetDaysUntilExpiry()
 
-func TestDomainGetDaysUntilExpiryShouldReturnZeroOnExpiryDay(t *testing.T) {
-	domain := Domain{
-		Name:       "example.org",
-		Exists:     true,
-		ExpiryDate: time.Now(),
-	}
-
-	result := domain.GetDaysUntilExpiry()
-
-	if result != 0 {
-		t.Fatal("wrong result, got", result, "instead of 0")
-	}
-}
-
-func TestDomainGetDaysUntilExpiryShouldReturnNegativeForExpired(t *testing.T) {
-	domain := Domain{
-		Name:       "example.org",
-		Exists:     true,
-		ExpiryDate: time.Now().Add(-1 * 30 * 24 * time.Hour), // 30 days before now
-	}
-
-	result := domain.GetDaysUntilExpiry()
-
-	if result >= 0 {
-		t.Fatal("wrong result, got", result, "instead of negative value")
+			if result != tt.expected {
+				t.Error("wrong result, got", result, "instead of", tt.expected)
+			}
+		})
 	}
 }
