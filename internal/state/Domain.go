@@ -1,6 +1,9 @@
 package state
 
-import "time"
+import (
+	"math"
+	"time"
+)
 
 type Domain struct {
 	Name       string
@@ -14,7 +17,7 @@ type Domain struct {
 // If the domain is already expired, returns -1
 func (d *Domain) GetDaysUntilExpiry() int {
 	currentTime := time.Now()
-	daysLeft := int(d.ExpiryDate.Sub(currentTime).Hours()/24) + 1 // Add 1 to include the current day
+	daysLeft := int(math.Round(d.ExpiryDate.Sub(currentTime).Hours() / 24))
 
 	if daysLeft < 0 {
 		return -1
