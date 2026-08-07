@@ -5,9 +5,18 @@ import (
 	"time"
 )
 
+// Default status is unknown
+type DomainStatus string
+
+const (
+	StatusActive  DomainStatus = "active"
+	StatusExpired DomainStatus = "expired"
+	StatusUnknown DomainStatus = "unknown"
+)
+
 type Domain struct {
 	Name       string
-	Exists     bool
+	Status     DomainStatus
 	ExpiryDate time.Time
 }
 

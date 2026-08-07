@@ -28,6 +28,7 @@ func UpdateDomains(store *state.DomainStore) {
 	}
 
 	wg.Wait()
+	store.MarkRefreshed()
 	println("[INFO] All domains updated.")
 }
 
@@ -45,13 +46,13 @@ func updateDomainExpiry(store *state.DomainStore, domain string, domainData stat
 		return
 	}
 
-	if domainData.Exists && res.Before(domainData.ExpiryDate) {
+	if domainData.Status == state.StatusActive && res.Before(domainData.ExpiryDate) {
 		fmt.Printf("[WARN] Expiry date fetched is earlier than currently saved date, this is likely due to an error when fetching date from WHOIS. Skipping %s...\n", domain)
 		return
 	}
 
 	domainData.ExpiryDate = res
-	domainData.Exists = true
+	domainData.Status = state.StatusActive
 	store.SetDomain(domain, domainData)
 
 	println("[INFO] Domain:", domain, "- Expiry date:", res.Format("2006-01-02 15:04:05"))

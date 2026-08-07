@@ -17,8 +17,8 @@ func ReportStatusInConsole(store *state.DomainStore) {
 
 	domains := store.GetAllDomains()
 	for domain, domainData := range domains {
-		if !domainData.Exists {
-			println("Domain:", domain, "- No expiry date available, domain might not exist")
+		if domainData.Status == state.StatusUnknown {
+			println("Domain:", domain, "- Unknown, no expiry date available, domain might not exist")
 			continue
 		}
 
