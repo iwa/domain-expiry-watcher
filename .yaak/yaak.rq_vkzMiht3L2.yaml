@@ -1,0 +1,33 @@
+type: http_request
+model: http_request
+id: rq_vkzMiht3L2
+createdAt: 2026-08-07T22:26:50.708179
+updatedAt: 2026-08-07T22:29:16.335110
+workspaceId: wk_N34eMkSyx6
+folderId: null
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: GET status
+sortPriority: -1786141610706.0
+url: ${[ host ]}/status
+urlParameters: []
+settingSendCookies:
+  enabled: false
+  value: true
+settingStoreCookies:
+  enabled: false
+  value: true
+settingValidateCertificates:
+  enabled: false
+  value: true
+settingFollowRedirects:
+  enabled: false
+  value: true
+settingRequestTimeout:
+  enabled: false
+  value: 0
