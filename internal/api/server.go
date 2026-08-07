@@ -19,7 +19,8 @@ func NewServer(addr string, store *state.DomainStore) *Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", HealthHandler)
 	mux.HandleFunc("/status", StatusHandlerFactory(store))
-	mux.HandleFunc("/", DomainsPageHandlerFactory(store))
+	mux.HandleFunc("/api/domains", DomainsAPIHandlerFactory(store))
+	// mux.HandleFunc("/", DomainsPageHandlerFactory(store))
 
 	return &Server{
 		server: &http.Server{
