@@ -15,7 +15,7 @@ func TestDomainGetDaysUntilExpiry(t *testing.T) {
 			"should return correct value",
 			Domain{
 				Name:       "example.org",
-				Exists:     true,
+				Status:     StatusActive,
 				ExpiryDate: time.Now().Add(30 * 24 * time.Hour), // 30 days after now
 			},
 			30,
@@ -24,7 +24,7 @@ func TestDomainGetDaysUntilExpiry(t *testing.T) {
 			"should return zero on expiry day",
 			Domain{
 				Name:       "example.org",
-				Exists:     true,
+				Status:     StatusActive,
 				ExpiryDate: time.Now(),
 			},
 			0,
@@ -33,7 +33,7 @@ func TestDomainGetDaysUntilExpiry(t *testing.T) {
 			"should return -1 for expired domain",
 			Domain{
 				Name:       "example.org",
-				Exists:     true,
+				Status:     StatusActive,
 				ExpiryDate: time.Now().Add(-1 * 30 * 24 * time.Hour), // 30 days before now
 			},
 			-1,

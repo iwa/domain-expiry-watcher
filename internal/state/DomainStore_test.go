@@ -22,7 +22,7 @@ func TestSetAndGetDomain(t *testing.T) {
 	store := NewDomainStore()
 	domain := Domain{
 		Name:       "example.com",
-		Exists:     true,
+		Status:     StatusActive,
 		ExpiryDate: time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC),
 	}
 
