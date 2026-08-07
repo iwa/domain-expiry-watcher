@@ -3,11 +3,13 @@ package state
 import (
 	"maps"
 	"sync"
+	"time"
 )
 
 type DomainStore struct {
-	mu      sync.RWMutex
-	domains map[string]Domain
+	mu            sync.RWMutex
+	domains       map[string]Domain
+	lastRefreshed time.Time
 }
 
 func NewDomainStore() *DomainStore {
@@ -63,4 +65,21 @@ func (ds *DomainStore) Count() int {
 	defer ds.mu.RUnlock()
 
 	return len(ds.domains)
+}
+
+// GetLastRefreshed returns the time the domains were last refreshed.
+// Returns the zero time if no refresh has happened yet.
+func (ds *DomainStore) GetLastRefreshed() time.Time {
+	ds.mu.RLock()
+	defer ds.mu.RUnlock()
+
+	return ds.lastRefreshed
+}
+
+// MarkRefreshed records the current time as the last refresh time.
+func (ds *DomainStore) MarkRefreshed() {
+	ds.mu.Lock()
+	defer ds.mu.Unlock()
+
+	ds.lastRefreshed = time.Now()
 }
