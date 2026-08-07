@@ -9,4 +9,7 @@ run:
 clean:
 	rm -r bin
 
-.PHONY: all build run clean
+test:
+	go test ./...
+
+.PHONY: all build run clean test
