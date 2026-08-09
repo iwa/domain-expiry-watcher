@@ -1,54 +1,11 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import ExpiraTable from "./ExpiraTable";
+import { C, hexA, MONO } from "./styles";
+import { domainUrgency, type Domain, type DomainsPayload, type LoadState } from "./types";
 
-const HORIZON = 365;
+export type { Domain, DomainStatus, DomainsPayload } from "./types";
 
-const C = {
-  purple: "#a78bfa",
-  amber: "#e6b65c",
-  red: "#e8736a",
-  gray: "#7c7c88",
-  green: "#5fb98b",
-  text: "#ededf1",
-  text2: "#9a9aa6",
-  text3: "#62626c",
-  border: "#2b2b34",
-  surface: "#1a1a1f",
-  surface2: "#202027",
-} as const;
-
-const MONO = "'Geist Mono', ui-monospace, Menlo, monospace";
-
-export type DomainStatus = "active" | "expired" | "unknown";
-
-export interface Domain {
-  name: string;
-  status: DomainStatus;
-  expiryDate: string | null;
-  remainingDays: number;
-}
-
-export interface DomainsPayload {
-  lastRefreshed: string;
-  domains: Domain[];
-}
-
-type Urgency = "ok" | "soon" | "expired" | "unknown";
 type Filter = "all" | "active" | "soon" | "expired" | "unknown";
-type SortKey = "name" | "expiry" | "days" | "status";
-type LoadState = "loading" | "live" | "error";
-
-function hexA(hex: string, a: number) {
-  const n = parseInt(hex.slice(1), 16);
-  return `rgba(${[(n >> 16) & 255, (n >> 8) & 255, n & 255].join(",")},${a})`;
-}
-
-const dateFmt = new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric" });
-
-function formatExpiry(iso: string | null) {
-  if (!iso) return "—";
-  const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? "—" : dateFmt.format(d);
-}
 
 function relTime(date: Date | null) {
   if (!date || Number.isNaN(date.getTime())) return "—";
@@ -60,13 +17,6 @@ function relTime(date: Date | null) {
   const h = Math.round(m / 60);
   if (h < 24) return `${h}h ago`;
   return `${Math.round(h / 24)}d ago`;
-}
-
-function statusText(status: DomainStatus) {
-  if (status === "active") return "Active";
-  if (status === "expired") return "Expired";
-  if (status === "unknown") return "Unknown";
-  return "Unknown";
 }
 
 export interface ExpiraDashboardProps {
@@ -85,8 +35,6 @@ export default function ExpiraDashboard({
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [threshold, setThreshold] = useState(soonThreshold);
-  const [sortKey, setSortKey] = useState<SortKey>("days");
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
   const endpointRef = useRef(endpoint);
   endpointRef.current = endpoint;
@@ -116,25 +64,7 @@ export default function ExpiraDashboard({
     return () => clearInterval(timer);
   }, [fetchData]);
 
-  const urgency = useCallback(
-    (d: Domain): Urgency => {
-      if (d.status === "unknown" || d.expiryDate == null) return "unknown";
-      if (d.status === "expired" || d.remainingDays < 0) return "expired";
-      if (d.remainingDays <= threshold) return "soon";
-      return "ok";
-    },
-    [threshold],
-  );
-
-  const color = (u: Urgency) =>
-    u === "expired" ? C.red : u === "soon" ? C.amber : u === "unknown" ? C.gray : C.purple;
-
-  const daysText = (d: Domain) => {
-    if (d.status === "unknown" || d.expiryDate == null) return "—";
-    if (d.remainingDays < 0) return "0d";
-    if (d.remainingDays === 0) return "today";
-    return `${d.remainingDays}d`;
-  };
+  const urgency = useCallback((domain: Domain) => domainUrgency(domain, threshold), [threshold]);
 
   const counts = useMemo(() => {
     const c = { all: domains.length, active: 0, soon: 0, expired: 0, unknown: 0 };
@@ -148,45 +78,13 @@ export default function ExpiraDashboard({
     return c;
   }, [domains, urgency]);
 
-  const rows = useMemo(() => {
+  const filteredDomains = useMemo(() => {
     const q = query.trim().toLowerCase();
     const match = (d: Domain) =>
       filter === "all" || (filter === "active" ? d.status === "active" : urgency(d) === filter);
-    const val = (d: Domain): string | number => {
-      if (sortKey === "name") return d.name;
-      if (sortKey === "status") return statusText(d.status);
-      return d.expiryDate == null ? Infinity : d.remainingDays;
-    };
 
-    return domains
-      .filter((d) => d.name.toLowerCase().includes(q) && match(d))
-      .sort((a, b) => {
-        const av = val(a);
-        const bv = val(b);
-        const cmp = typeof av === "string" ? av.localeCompare(bv as string) : av - (bv as number);
-        return sortDir === "asc" ? cmp : -cmp;
-      })
-      .map((d) => {
-        const u = urgency(d);
-        const col = color(u);
-        const frac =
-          d.expiryDate == null || d.remainingDays <= 0
-            ? 0
-            : Math.max(0, Math.min(1, d.remainingDays / HORIZON));
-        return {
-          key: d.name,
-          name: d.name,
-          expiry: formatExpiry(d.expiryDate),
-          days: daysText(d),
-          color: col,
-          fillWidth: `${frac * 100}%`,
-          fillColor: u === "ok" || u === "soon" ? col : C.border,
-          pillBg: hexA(col, 0.14),
-          pillBorder: hexA(col, 0.28),
-          statusText: u === "soon" ? "Expiring soon" : statusText(d.status),
-        };
-      });
-  }, [domains, query, filter, sortKey, sortDir, urgency]);
+    return domains.filter((d) => d.name.toLowerCase().includes(q) && match(d));
+  }, [domains, query, filter, urgency]);
 
   const chips = (
     [
@@ -208,28 +106,6 @@ export default function ExpiraDashboard({
       border: on ? hexA(accent, 0.4) : C.border,
       countBg: on ? hexA(accent, 0.22) : C.surface2,
       countColor: on ? accent : C.text3,
-    };
-  });
-
-  const cols = (
-    [
-      ["name", "Domain"],
-      ["expiry", "Expiry date"],
-      ["days", "Remaining"],
-      ["status", "Status"],
-    ] as const
-  ).map(([k, label]) => {
-    const active = sortKey === k;
-    return {
-      key: k,
-      label,
-      onClick: () =>
-        sortKey === k
-          ? setSortDir((dir) => (dir === "asc" ? "desc" : "asc"))
-          : (setSortKey(k), setSortDir("asc")),
-      caretOpacity: active ? 1 : 0.3,
-      upFill: active && sortDir === "asc" ? C.purple : "#44444e",
-      downFill: active && sortDir === "desc" ? C.purple : "#44444e",
     };
   });
 
@@ -505,155 +381,13 @@ export default function ExpiraDashboard({
           ))}
         </div>
 
-        <div style={{ overflowX: "auto" }}>
-          <div
-            style={{
-              border: "1px solid #232329",
-              borderRadius: 13,
-              overflow: "hidden",
-              background: C.surface,
-              minWidth: 600,
-            }}
-          >
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "minmax(0,1fr) 132px 200px 150px",
-                padding: "13px 20px",
-                background: C.surface2,
-                borderBottom: "1px solid #232329",
-              }}
-            >
-              {cols.map((col) => (
-                <button
-                  key={col.key}
-                  type="button"
-                  className="ex-col"
-                  onClick={col.onClick}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 5,
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 0,
-                    fontFamily: "inherit",
-                    fontSize: 10.5,
-                    fontWeight: 600,
-                    textTransform: "uppercase",
-                    letterSpacing: ".1em",
-                    color: C.text3,
-                  }}
-                >
-                  {col.label}
-                  <svg width="8" height="11" viewBox="0 0 8 11" fill="none" style={{ opacity: col.caretOpacity }}>
-                    <path d="M4 0l3 3.5H1z" fill={col.upFill} />
-                    <path d="M4 11l3-3.5H1z" fill={col.downFill} />
-                  </svg>
-                </button>
-              ))}
-            </div>
-            <div>
-              {rows.map((r) => (
-                <div
-                  key={r.key}
-                  className="ex-row"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "minmax(0,1fr) 132px 200px 150px",
-                    alignItems: "center",
-                    padding: "15px 20px",
-                    borderTop: "1px solid #232329",
-                    transition: "background .12s",
-                  }}
-                >
-                  <div style={{ fontFamily: MONO, fontSize: 13.5, color: C.text }}>{r.name}</div>
-                  <div style={{ fontFamily: MONO, fontSize: 12.5, color: C.text2 }}>{r.expiry}</div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      gap: 7,
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: MONO,
-                        fontSize: 12.5,
-                        whiteSpace: "nowrap",
-                        color: r.color,
-                      }}
-                    >
-                      {r.days}
-                    </span>
-                    <div
-                      style={{
-                        width: 120,
-                        height: 4,
-                        borderRadius: 3,
-                        background: C.border,
-                        overflow: "hidden",
-                      }}
-                    >
-                      <div
-                        style={{
-                          height: "100%",
-                          borderRadius: 3,
-                          transition: "width .3s ease",
-                          width: r.fillWidth,
-                          background: r.fillColor,
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <span
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 6,
-                        padding: "4px 11px 4px 9px",
-                        borderRadius: 20,
-                        fontSize: 11.5,
-                        fontWeight: 500,
-                        whiteSpace: "nowrap",
-                        color: r.color,
-                        background: r.pillBg,
-                        border: `1px solid ${r.pillBorder}`,
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 6,
-                          height: 6,
-                          borderRadius: "50%",
-                          flex: "none",
-                          background: r.color,
-                        }}
-                      />
-                      {r.statusText}
-                    </span>
-                  </div>
-                </div>
-              ))}
-              {load === "error" ? (
-                <div style={{ padding: "30px 20px", color: C.text3, fontSize: 13, textAlign: "center" }}>
-                  error while fetching data
-                </div>
-              ) : load === "live" && domains.length === 0 ? (
-                <div style={{ padding: "30px 20px", color: C.text3, fontSize: 13, textAlign: "center" }}>
-                  empty data, add domains in the config
-                </div>
-              ) : load === "live" && rows.length === 0 ? (
-                <div style={{ padding: "30px 20px", color: C.text3, fontSize: 13, textAlign: "center" }}>
-                  {emptyText}
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </div>
+        <ExpiraTable
+          domains={filteredDomains}
+          totalDomains={domains.length}
+          load={load}
+          soonThreshold={threshold}
+          emptyText={emptyText}
+        />
 
         <footer
           style={{
