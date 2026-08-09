@@ -86,20 +86,20 @@ function ExpiraDashboardContent({
 
   return (
     <div className="min-h-screen bg-expira-bg font-sans text-expira-text [background:radial-gradient(1100px_600px_at_80%_-10%,rgba(167,139,250,.07),transparent_60%),#131316]">
-      <div className="mx-auto w-[calc(100%_-_40px)] max-w-[940px] pt-14 pb-10">
+      <div className="mx-auto w-[calc(100%-40px)] max-w-235 pt-14 pb-10">
         <header className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-[9px] text-[17px] font-semibold tracking-[-.01em]">
+          <div className="flex items-center gap-2.25 text-[17px] font-semibold tracking-[-.01em]">
             <span className="h-2 w-2 rounded-full bg-expira-purple ring-3 ring-expira-purple/18" />
             expira
           </div>
           <div className="flex items-center gap-3">
-            <div className="inline-flex items-center gap-[7px] font-mono text-[11.5px] tracking-[.02em] text-expira-text-3">
+            <div className="inline-flex items-center gap-1.75 font-mono text-[11.5px] tracking-[.02em] text-expira-text-3">
               <span className={`h-1.5 w-1.5 shrink-0 rounded-full ring-3 ring-expira-green/14 ${LOAD_DOT_CLASSES[load]}`} />
               {(load === "error" ? "error " : "checked ") + relTime(refreshedAt)}
             </div>
             <button
               type="button"
-              className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-[8px] border border-expira-border bg-expira-surface text-expira-text-2 transition-all duration-[140ms] hover:border-expira-focus hover:text-expira-text active:scale-[.94]"
+              className="flex h-7.5 w-7.5 cursor-pointer items-center justify-center rounded-lg border border-expira-border bg-expira-surface text-expira-text-2 transition-all duration-140 hover:border-expira-focus hover:text-expira-text active:scale-[.94]"
               onClick={() => void refetch()}
               title="Refresh now"
             >
@@ -120,7 +120,7 @@ function ExpiraDashboardContent({
           </div>
         </header>
 
-        <div className="mt-8 mb-[30px] flex items-center gap-[26px]">
+        <div className="mt-8 mb-7.5 flex items-center gap-7.5">
           {(
             [
               [String(counts.all).padStart(2, "0"), "Tracked", "text-expira-text"],
@@ -142,7 +142,7 @@ function ExpiraDashboardContent({
                 <div className={`font-mono text-[40px] font-medium leading-none tracking-[-.02em] ${valueColor}`}>
                   {value}
                 </div>
-                <div className="mt-[9px] text-[11px] uppercase tracking-[.13em] text-expira-text-2">
+                <div className="mt-2.25 text-[11px] uppercase tracking-[.13em] text-expira-text-2">
                   {label}
                 </div>
               </div>
@@ -151,7 +151,7 @@ function ExpiraDashboardContent({
         </div>
 
         <div className="mb-3 flex flex-wrap items-center gap-3">
-          <div className="flex min-w-[240px] flex-1 items-center gap-[9px] rounded-[9px] border border-expira-border bg-expira-surface px-[13px] py-[9px] text-expira-text-3 focus-within:border-expira-focus">
+          <div className="flex min-w-60 flex-1 items-center gap-2.25 rounded-[9px] border border-expira-border bg-expira-surface px-[13px] py-[9px] text-expira-text-3 focus-within:border-expira-focus">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4">
               <circle cx="6" cy="6" r="4.2" />
               <path d="M9.2 9.2L12.5 12.5" strokeLinecap="round" />
@@ -165,9 +165,9 @@ function ExpiraDashboardContent({
           </div>
           <div
             title="Highlight domains expiring within…"
-            className="flex items-center gap-1 rounded-[9px] border border-expira-border bg-expira-surface py-1 pr-[6px] pl-[11px]"
+            className="flex items-center gap-1 rounded-[9px] border border-expira-border bg-expira-surface py-1 pr-1.5 pl-2.75"
           >
-            <span className="mr-[3px] text-[11px] uppercase tracking-[.08em] text-expira-text-3">
+            <span className="mr-0.75 text-[11px] uppercase tracking-[.08em] text-expira-text-3">
               Soon ≤
             </span>
             {[7, 30, 60, 90].map((t) => (
@@ -175,7 +175,7 @@ function ExpiraDashboardContent({
                 key={t}
                 type="button"
                 onClick={() => setThreshold(t)}
-                className={`cursor-pointer rounded-[6px] border-0 px-2 py-[5px] font-mono text-[12px] transition-all duration-[120ms] ${
+                className={`cursor-pointer rounded-md border-0 px-2 py-1.25 font-mono text-[12px] transition-all duration-120 ${
                   threshold === t ? "bg-expira-purple/16 text-expira-purple" : "bg-transparent text-expira-text-2"
                 }`}
               >
@@ -195,7 +195,7 @@ function ExpiraDashboardContent({
           emptyText={emptyText}
         />
 
-        <footer className="mt-[18px] flex flex-wrap items-center justify-between gap-3 text-[11.5px] text-expira-text-3">
+        <footer className="mt-4.5 flex flex-wrap items-center justify-between gap-3 text-[11.5px] text-expira-text-3">
           <span>
             Source ·{" "}
             <code className="font-mono text-expira-text-2">{endpoint}</code>

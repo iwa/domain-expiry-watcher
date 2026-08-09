@@ -136,11 +136,11 @@ export default function ExpiraTable({
                 : Math.max(0, Math.min(1, domain.remainingDays / HORIZON));
 
             return (
-              <div className="flex flex-col items-start gap-[7px]">
+              <div className="flex flex-col items-start gap-1.75">
                 <span className={`whitespace-nowrap font-mono text-[12.5px] ${URGENCY_TEXT_CLASSES[urgency]}`}>
                   {daysText(domain)}
                 </span>
-                <div className="h-1 w-[120px] overflow-hidden rounded-[3px] bg-expira-border">
+                <div className="h-1 w-30 overflow-hidden rounded-[3px] bg-expira-border">
                   <div
                     className={`h-full rounded-[3px] transition-[width] duration-300 ease-in-out ${URGENCY_FILL_CLASSES[urgency]}`}
                     style={{ width: `${fraction * 100}%` }}
@@ -159,7 +159,7 @@ export default function ExpiraTable({
 
             return (
               <span
-                className={`inline-flex items-center gap-[6px] whitespace-nowrap rounded-[20px] border py-1 pr-[11px] pl-[9px] text-[11.5px] font-medium ${STATUS_CLASSES[urgency]}`}
+                className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-[20px] border py-1 pr-2.75 pl-2.25 text-[11.5px] font-medium ${STATUS_CLASSES[urgency]}`}
               >
                 <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${URGENCY_DOT_CLASSES[urgency]}`} />
                 {displayStatus(domain, soonThreshold)}
@@ -193,13 +193,13 @@ export default function ExpiraTable({
 
   return (
     <div className="overflow-x-auto">
-      <div className="min-w-[600px] overflow-hidden rounded-[13px] border border-expira-table-border bg-expira-surface">
-        <table className="w-full min-w-[600px] table-fixed border-collapse">
+      <div className="min-w-150 overflow-hidden rounded-[13px] border border-expira-table-border bg-expira-surface">
+        <table className="w-full min-w-150 table-fixed border-collapse">
           <colgroup>
             <col />
-            <col className="w-[132px]" />
-            <col className="w-[200px]" />
-            <col className="w-[150px]" />
+            <col className="w-33" />
+            <col className="w-50" />
+            <col className="w-37.5" />
           </colgroup>
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -213,11 +213,11 @@ export default function ExpiraTable({
                       key={header.id}
                       scope="col"
                       aria-sort={sorted === "asc" ? "ascending" : sorted === "desc" ? "descending" : "none"}
-                      className="px-5 py-[13px] text-left align-middle font-normal"
+                      className="px-5 py-3.25 text-left align-middle font-normal"
                     >
                       <button
                         type="button"
-                        className="flex cursor-pointer items-center gap-[5px] border-0 bg-transparent p-0 font-sans text-[10.5px] font-semibold uppercase tracking-[.1em] text-expira-text-3 hover:text-expira-text-2"
+                        className="flex cursor-pointer items-center gap-1.25 border-0 bg-transparent p-0 font-sans text-[10.5px] font-semibold uppercase tracking-widest text-expira-text-3 hover:text-expira-text-2"
                         onClick={header.column.getToggleSortingHandler()}
                         aria-label={`Sort by ${label}`}
                       >
@@ -250,9 +250,9 @@ export default function ExpiraTable({
           </thead>
           <tbody>
             {tableRows.map((row) => (
-              <tr key={row.id} className="transition-[background] duration-[120ms] hover:bg-expira-surface-2">
+              <tr key={row.id} className="transition-[background] duration-120 hover:bg-expira-surface-2">
                 {row.getAllCells().map((cell) => (
-                  <td key={cell.id} className="border-t border-expira-table-border px-5 py-[15px] align-middle">
+                  <td key={cell.id} className="border-t border-expira-table-border px-5 py-3.75 align-middle">
                     <table.FlexRender cell={cell} />
                   </td>
                 ))}
@@ -260,7 +260,7 @@ export default function ExpiraTable({
             ))}
             {tableRows.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-5 py-[30px] text-center text-[13px] text-expira-text-3">
+                <td colSpan={4} className="px-5 py-7.5 text-center text-[13px] text-expira-text-3">
                   {emptyMessage}
                 </td>
               </tr>
