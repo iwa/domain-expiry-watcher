@@ -1,4 +1,5 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import ExpiraTable from "./ExpiraTable";
 import { C, hexA, MONO } from "./styles";
 import { domainUrgency, type Domain, type DomainsPayload, type LoadState } from "./types";
@@ -24,45 +25,34 @@ export interface ExpiraDashboardProps {
   soonThreshold?: number;
 }
 
-export default function ExpiraDashboard({
+function ExpiraDashboardContent({
   endpoint = "/api/domains",
   soonThreshold = 30,
 }: ExpiraDashboardProps) {
-  const [domains, setDomains] = useState<Domain[]>([]);
-  const [load, setLoad] = useState<LoadState>("loading");
-  const [refreshedAt, setRefreshedAt] = useState<Date | null>(null);
-  const [, setTick] = useState(0);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [threshold, setThreshold] = useState(soonThreshold);
 
-  const endpointRef = useRef(endpoint);
-  endpointRef.current = endpoint;
+  const { data, dataUpdatedAt, isError, isPending, refetch } = useQuery<DomainsPayload>({
+    queryKey: ["domains", endpoint],
+    queryFn: async ({ signal }) => {
+      const response = await fetch(endpoint, { cache: "no-store", signal });
+      if (!response.ok) throw new Error(String(response.status));
 
-  const fetchData = useCallback(() => {
-    fetch(endpointRef.current, { cache: "no-store" })
-      .then((r) => {
-        if (!r.ok) throw new Error(String(r.status));
-        return r.json() as Promise<DomainsPayload>;
-      })
-      .then((data) => {
-        if (!data || !Array.isArray(data.domains)) throw new Error("unexpected payload");
-        setDomains(data.domains);
-        setRefreshedAt(data.lastRefreshed ? new Date(data.lastRefreshed) : new Date());
-        setLoad("live");
-      })
-      .catch(() => {
-        setDomains([]);
-        setRefreshedAt(null);
-        setLoad("error");
-      });
-  }, []);
+      const data = (await response.json()) as DomainsPayload;
+      if (!data || !Array.isArray(data.domains)) throw new Error("unexpected payload");
+      return data;
+    },
+    retry: 1,
+  });
 
-  useEffect(() => {
-    fetchData();
-    const timer = setInterval(() => setTick((t) => t + 1), 15000);
-    return () => clearInterval(timer);
-  }, [fetchData]);
+  const domains = data?.domains ?? [];
+  const load: LoadState = isPending ? "loading" : isError ? "error" : "live";
+  const refreshedAt = data?.lastRefreshed
+    ? new Date(data.lastRefreshed)
+    : dataUpdatedAt
+      ? new Date(dataUpdatedAt)
+      : null;
 
   const urgency = useCallback((domain: Domain) => domainUrgency(domain, threshold), [threshold]);
 
@@ -175,7 +165,7 @@ export default function ExpiraDashboard({
             <button
               type="button"
               className="ex-refresh"
-              onClick={fetchData}
+              onClick={() => void refetch()}
               title="Refresh now"
               style={{
                 display: "flex",
@@ -409,5 +399,15 @@ export default function ExpiraDashboard({
         </footer>
       </div>
     </div>
+  );
+}
+
+export default function ExpiraDashboard(props: ExpiraDashboardProps) {
+  const [queryClient] = useState(() => new QueryClient());
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ExpiraDashboardContent {...props} />
+    </QueryClientProvider>
   );
 }
