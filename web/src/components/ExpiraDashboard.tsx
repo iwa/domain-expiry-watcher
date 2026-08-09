@@ -124,6 +124,7 @@ function ExpiraDashboardContent({
           {(
             [
               [String(counts.all).padStart(2, "0"), "Tracked", "text-expira-text"],
+              [String(counts.active).padStart(2, "0"), "Active", "text-expira-text"],
               [
                 String(counts.soon).padStart(2, "0"),
                 "Expiring soon",
