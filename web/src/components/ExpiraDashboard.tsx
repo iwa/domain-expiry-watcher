@@ -18,7 +18,7 @@ const C = {
 
 const MONO = "'Geist Mono', ui-monospace, Menlo, monospace";
 
-export type DomainStatus = "active" | "expired" | "unknown" | (string & {});
+export type DomainStatus = "active" | "expired" | "unknown";
 
 export interface Domain {
   name: string;
@@ -66,7 +66,7 @@ function statusText(status: DomainStatus) {
   if (status === "active") return "Active";
   if (status === "expired") return "Expired";
   if (status === "unknown") return "Unknown";
-  return status.charAt(0).toUpperCase() + status.slice(1);
+  return "Unknown";
 }
 
 export interface ExpiraDashboardProps {
