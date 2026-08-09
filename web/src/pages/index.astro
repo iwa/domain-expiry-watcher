@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import ExpiraDashboard from "../components/ExpiraDashboard";
 ---
 
 <html lang="en">
@@ -7,11 +8,60 @@ import "../styles/global.css";
         <meta charset="utf-8" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" href="/favicon.ico" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="generator" content={Astro.generator} />
-        <title>Astro</title>
+        <meta name="description" content="Expira · stateless domain expiry monitor" />
+        <title>Expira</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+            rel="stylesheet"
+        />
     </head>
     <body>
-        <h1>Astro</h1>
+        <ExpiraDashboard client:only="react" endpoint="/api/domains" soonThreshold={30} />
     </body>
 </html>
+
+<style is:global>
+    html,
+    body {
+        margin: 0;
+        background: #131316;
+    }
+    body {
+        -webkit-font-smoothing: antialiased;
+    }
+    ::selection {
+        background: rgba(167, 139, 250, 0.3);
+    }
+    input::placeholder {
+        color: #62626c;
+    }
+    a {
+        color: #a78bfa;
+        text-decoration: none;
+    }
+    a:hover {
+        color: #c4b5fd;
+    }
+
+    /* Interaction states the design expresses via style-hover / style-focus / style-active. */
+    .ex-refresh:hover {
+        color: #ededf1 !important;
+        border-color: #8a76d8 !important;
+    }
+    .ex-refresh:active {
+        transform: scale(0.94);
+    }
+    .ex-search:focus-within {
+        border-color: #8a76d8 !important;
+    }
+    .ex-col:hover {
+        color: #9a9aa6 !important;
+    }
+    .ex-row:hover {
+        background: #202027;
+    }
+</style>
