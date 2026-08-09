@@ -1,17 +1,8 @@
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Fragment, useCallback, useMemo, useState } from "react";
 import ExpiraFilterChips, { type Filter } from "./ExpiraFilterChips";
 import ExpiraTable from "./ExpiraTable";
-import {
-  domainUrgency,
-  type Domain,
-  type DomainsPayload,
-  type LoadState,
-} from "./types";
+import { domainUrgency, type Domain, type DomainsPayload, type LoadState } from "./types";
 
 export type { Domain, DomainStatus, DomainsPayload } from "./types";
 
@@ -46,20 +37,18 @@ function ExpiraDashboardContent({
   const [filter, setFilter] = useState<Filter>("all");
   const [threshold, setThreshold] = useState(soonThreshold);
 
-  const { data, dataUpdatedAt, isError, isPending, refetch } =
-    useQuery<DomainsPayload>({
-      queryKey: ["domains", endpoint],
-      queryFn: async ({ signal }) => {
-        const response = await fetch(endpoint, { cache: "no-store", signal });
-        if (!response.ok) throw new Error(String(response.status));
+  const { data, dataUpdatedAt, isError, isPending, refetch } = useQuery<DomainsPayload>({
+    queryKey: ["domains", endpoint],
+    queryFn: async ({ signal }) => {
+      const response = await fetch(endpoint, { cache: "no-store", signal });
+      if (!response.ok) throw new Error(String(response.status));
 
-        const data = (await response.json()) as DomainsPayload;
-        if (!data || !Array.isArray(data.domains))
-          throw new Error("unexpected payload");
-        return data;
-      },
-      retry: 1,
-    });
+      const data = (await response.json()) as DomainsPayload;
+      if (!data || !Array.isArray(data.domains)) throw new Error("unexpected payload");
+      return data;
+    },
+    retry: 1,
+  });
 
   const domains = data?.domains ?? [];
   const load: LoadState = isPending ? "loading" : isError ? "error" : "live";
@@ -69,10 +58,7 @@ function ExpiraDashboardContent({
       ? new Date(dataUpdatedAt)
       : null;
 
-  const urgency = useCallback(
-    (domain: Domain) => domainUrgency(domain, threshold),
-    [threshold],
-  );
+  const urgency = useCallback((domain: Domain) => domainUrgency(domain, threshold), [threshold]);
 
   const counts = useMemo(() => {
     const c = {
@@ -95,8 +81,7 @@ function ExpiraDashboardContent({
   const filteredDomains = useMemo(() => {
     const q = query.trim().toLowerCase();
     const match = (d: Domain) =>
-      filter === "all" ||
-      (filter === "active" ? d.status === "active" : urgency(d) === filter);
+      filter === "all" || (filter === "active" ? d.status === "active" : urgency(d) === filter);
 
     return domains.filter((d) => d.name.toLowerCase().includes(q) && match(d));
   }, [domains, query, filter, urgency]);
@@ -118,8 +103,7 @@ function ExpiraDashboardContent({
               <span
                 className={`h-1.5 w-1.5 shrink-0 rounded-full ring-3 ring-expira-green/14 ${LOAD_DOT_CLASSES[load]}`}
               />
-              {(load === "error" ? "error " : "checked ") +
-                relTime(refreshedAt)}
+              {(load === "error" ? "error " : "checked ") + relTime(refreshedAt)}
             </div>
             <button
               type="button"
@@ -147,16 +131,8 @@ function ExpiraDashboardContent({
         <div className="mt-8 mb-7.5 flex items-center gap-7.5">
           {(
             [
-              [
-                String(counts.all).padStart(2, "0"),
-                "Tracked",
-                "text-expira-text",
-              ],
-              [
-                String(counts.active).padStart(2, "0"),
-                "Active",
-                "text-expira-text",
-              ],
+              [String(counts.all).padStart(2, "0"), "Tracked", "text-expira-text"],
+              [String(counts.active).padStart(2, "0"), "Active", "text-expira-text"],
               [
                 String(counts.soon).padStart(2, "0"),
                 "Expiring soon",
@@ -229,11 +205,7 @@ function ExpiraDashboardContent({
           </div>
         </div>
 
-        <ExpiraFilterChips
-          filter={filter}
-          counts={counts}
-          onChange={setFilter}
-        />
+        <ExpiraFilterChips filter={filter} counts={counts} onChange={setFilter} />
 
         <ExpiraTable
           domains={filteredDomains}

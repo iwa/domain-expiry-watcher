@@ -50,7 +50,9 @@ export default function ExpiraFilterChips({ filter, counts, onChange }: ExpiraFi
             type="button"
             onClick={() => onChange(key)}
             className={`inline-flex cursor-pointer items-center gap-[7px] rounded-[20px] border px-[13px] py-[6px] pr-2 font-sans text-[12.5px] font-medium transition-all duration-[140ms] ${
-              on ? `${styles.active} text-expira-text` : "border-expira-border bg-expira-surface text-expira-text-2"
+              on
+                ? `${styles.active} text-expira-text`
+                : "border-expira-border bg-expira-surface text-expira-text-2"
             }`}
           >
             {label}

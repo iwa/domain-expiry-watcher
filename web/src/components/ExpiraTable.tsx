@@ -25,7 +25,11 @@ const COLUMN_LABELS = {
   status: "Status",
 } as const;
 
-const dateFmt = new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric" });
+const dateFmt = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "2-digit",
+  year: "numeric",
+});
 
 function formatExpiry(iso: string | null) {
   if (!iso) return "—";
@@ -86,7 +90,9 @@ function expirySortValue(expiryDate: string | null) {
 }
 
 function daysSortValue(domain: Domain) {
-  return domain.status === "unknown" || domain.expiryDate == null ? undefined : domain.remainingDays;
+  return domain.status === "unknown" || domain.expiryDate == null
+    ? undefined
+    : domain.remainingDays;
 }
 
 export interface ExpiraTableProps {
@@ -137,7 +143,9 @@ export default function ExpiraTable({
 
             return (
               <div className="flex flex-col items-start gap-1.75">
-                <span className={`whitespace-nowrap font-mono text-[12.5px] ${URGENCY_TEXT_CLASSES[urgency]}`}>
+                <span
+                  className={`whitespace-nowrap font-mono text-[12.5px] ${URGENCY_TEXT_CLASSES[urgency]}`}
+                >
                   {daysText(domain)}
                 </span>
                 <div className="h-1 w-30 overflow-hidden rounded-[3px] bg-expira-border">
@@ -161,7 +169,9 @@ export default function ExpiraTable({
               <span
                 className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-[20px] border py-1 pr-2.75 pl-2.25 text-[11.5px] font-medium ${STATUS_CLASSES[urgency]}`}
               >
-                <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${URGENCY_DOT_CLASSES[urgency]}`} />
+                <span
+                  className={`h-1.5 w-1.5 shrink-0 rounded-full ${URGENCY_DOT_CLASSES[urgency]}`}
+                />
                 {displayStatus(domain, soonThreshold)}
               </span>
             );
@@ -203,16 +213,23 @@ export default function ExpiraTable({
           </colgroup>
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b border-expira-table-border bg-expira-surface-2">
+              <tr
+                key={headerGroup.id}
+                className="border-b border-expira-table-border bg-expira-surface-2"
+              >
                 {headerGroup.headers.map((header) => {
                   const sorted = header.column.getIsSorted();
-                  const label = COLUMN_LABELS[header.column.id as keyof typeof COLUMN_LABELS] ?? header.column.id;
+                  const label =
+                    COLUMN_LABELS[header.column.id as keyof typeof COLUMN_LABELS] ??
+                    header.column.id;
 
                   return (
                     <th
                       key={header.id}
                       scope="col"
-                      aria-sort={sorted === "asc" ? "ascending" : sorted === "desc" ? "descending" : "none"}
+                      aria-sort={
+                        sorted === "asc" ? "ascending" : sorted === "desc" ? "descending" : "none"
+                      }
                       className="px-5 py-3.25 text-left align-middle font-normal"
                     >
                       <button
@@ -237,7 +254,9 @@ export default function ExpiraTable({
                           />
                           <path
                             d="M4 11l3-3.5H1z"
-                            className={sorted === "desc" ? "text-expira-purple" : "text-expira-icon"}
+                            className={
+                              sorted === "desc" ? "text-expira-purple" : "text-expira-icon"
+                            }
                             fill="currentColor"
                           />
                         </svg>
@@ -250,9 +269,15 @@ export default function ExpiraTable({
           </thead>
           <tbody>
             {tableRows.map((row) => (
-              <tr key={row.id} className="transition-[background] duration-120 hover:bg-expira-surface-2">
+              <tr
+                key={row.id}
+                className="transition-[background] duration-120 hover:bg-expira-surface-2"
+              >
                 {row.getAllCells().map((cell) => (
-                  <td key={cell.id} className="border-t border-expira-table-border px-5 py-3.75 align-middle">
+                  <td
+                    key={cell.id}
+                    className="border-t border-expira-table-border px-5 py-3.75 align-middle"
+                  >
                     <table.FlexRender cell={cell} />
                   </td>
                 ))}
