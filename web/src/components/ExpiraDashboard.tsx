@@ -1,8 +1,17 @@
-import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
 import { Fragment, useCallback, useMemo, useState } from "react";
 import ExpiraFilterChips, { type Filter } from "./ExpiraFilterChips";
 import ExpiraTable from "./ExpiraTable";
-import { domainUrgency, type Domain, type DomainsPayload, type LoadState } from "./types";
+import {
+  domainUrgency,
+  type Domain,
+  type DomainsPayload,
+  type LoadState,
+} from "./types";
 
 export type { Domain, DomainStatus, DomainsPayload } from "./types";
 
@@ -37,18 +46,20 @@ function ExpiraDashboardContent({
   const [filter, setFilter] = useState<Filter>("all");
   const [threshold, setThreshold] = useState(soonThreshold);
 
-  const { data, dataUpdatedAt, isError, isPending, refetch } = useQuery<DomainsPayload>({
-    queryKey: ["domains", endpoint],
-    queryFn: async ({ signal }) => {
-      const response = await fetch(endpoint, { cache: "no-store", signal });
-      if (!response.ok) throw new Error(String(response.status));
+  const { data, dataUpdatedAt, isError, isPending, refetch } =
+    useQuery<DomainsPayload>({
+      queryKey: ["domains", endpoint],
+      queryFn: async ({ signal }) => {
+        const response = await fetch(endpoint, { cache: "no-store", signal });
+        if (!response.ok) throw new Error(String(response.status));
 
-      const data = (await response.json()) as DomainsPayload;
-      if (!data || !Array.isArray(data.domains)) throw new Error("unexpected payload");
-      return data;
-    },
-    retry: 1,
-  });
+        const data = (await response.json()) as DomainsPayload;
+        if (!data || !Array.isArray(data.domains))
+          throw new Error("unexpected payload");
+        return data;
+      },
+      retry: 1,
+    });
 
   const domains = data?.domains ?? [];
   const load: LoadState = isPending ? "loading" : isError ? "error" : "live";
@@ -58,10 +69,19 @@ function ExpiraDashboardContent({
       ? new Date(dataUpdatedAt)
       : null;
 
-  const urgency = useCallback((domain: Domain) => domainUrgency(domain, threshold), [threshold]);
+  const urgency = useCallback(
+    (domain: Domain) => domainUrgency(domain, threshold),
+    [threshold],
+  );
 
   const counts = useMemo(() => {
-    const c = { all: domains.length, active: 0, soon: 0, expired: 0, unknown: 0 };
+    const c = {
+      all: domains.length,
+      active: 0,
+      soon: 0,
+      expired: 0,
+      unknown: 0,
+    };
     for (const d of domains) {
       if (d.status === "active") c.active++;
       const u = urgency(d);
@@ -75,7 +95,8 @@ function ExpiraDashboardContent({
   const filteredDomains = useMemo(() => {
     const q = query.trim().toLowerCase();
     const match = (d: Domain) =>
-      filter === "all" || (filter === "active" ? d.status === "active" : urgency(d) === filter);
+      filter === "all" ||
+      (filter === "active" ? d.status === "active" : urgency(d) === filter);
 
     return domains.filter((d) => d.name.toLowerCase().includes(q) && match(d));
   }, [domains, query, filter, urgency]);
@@ -94,8 +115,11 @@ function ExpiraDashboardContent({
           </div>
           <div className="flex items-center gap-3">
             <div className="inline-flex items-center gap-1.75 font-mono text-[11.5px] tracking-[.02em] text-expira-text-3">
-              <span className={`h-1.5 w-1.5 shrink-0 rounded-full ring-3 ring-expira-green/14 ${LOAD_DOT_CLASSES[load]}`} />
-              {(load === "error" ? "error " : "checked ") + relTime(refreshedAt)}
+              <span
+                className={`h-1.5 w-1.5 shrink-0 rounded-full ring-3 ring-expira-green/14 ${LOAD_DOT_CLASSES[load]}`}
+              />
+              {(load === "error" ? "error " : "checked ") +
+                relTime(refreshedAt)}
             </div>
             <button
               type="button"
@@ -123,8 +147,16 @@ function ExpiraDashboardContent({
         <div className="mt-8 mb-7.5 flex items-center gap-7.5">
           {(
             [
-              [String(counts.all).padStart(2, "0"), "Tracked", "text-expira-text"],
-              [String(counts.active).padStart(2, "0"), "Active", "text-expira-text"],
+              [
+                String(counts.all).padStart(2, "0"),
+                "Tracked",
+                "text-expira-text",
+              ],
+              [
+                String(counts.active).padStart(2, "0"),
+                "Active",
+                "text-expira-text",
+              ],
               [
                 String(counts.soon).padStart(2, "0"),
                 "Expiring soon",
@@ -140,7 +172,9 @@ function ExpiraDashboardContent({
             <Fragment key={label}>
               {i > 0 && <span className="h-11 w-px bg-expira-border" />}
               <div>
-                <div className={`font-mono text-[40px] font-medium leading-none tracking-[-.02em] ${valueColor}`}>
+                <div
+                  className={`font-mono text-[40px] font-medium leading-none tracking-[-.02em] ${valueColor}`}
+                >
                   {value}
                 </div>
                 <div className="mt-2.25 text-[11px] uppercase tracking-[.13em] text-expira-text-2">
@@ -153,7 +187,14 @@ function ExpiraDashboardContent({
 
         <div className="mb-3 flex flex-wrap items-center gap-3">
           <div className="flex min-w-60 flex-1 items-center gap-2.25 rounded-[9px] border border-expira-border bg-expira-surface px-[13px] py-[9px] text-expira-text-3 focus-within:border-expira-focus">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+            >
               <circle cx="6" cy="6" r="4.2" />
               <path d="M9.2 9.2L12.5 12.5" strokeLinecap="round" />
             </svg>
@@ -177,7 +218,9 @@ function ExpiraDashboardContent({
                 type="button"
                 onClick={() => setThreshold(t)}
                 className={`cursor-pointer rounded-md border-0 px-2 py-1.25 font-mono text-[12px] transition-all duration-120 ${
-                  threshold === t ? "bg-expira-purple/16 text-expira-purple" : "bg-transparent text-expira-text-2"
+                  threshold === t
+                    ? "bg-expira-purple/16 text-expira-purple"
+                    : "bg-transparent text-expira-text-2"
                 }`}
               >
                 {t}d
@@ -186,7 +229,11 @@ function ExpiraDashboardContent({
           </div>
         </div>
 
-        <ExpiraFilterChips filter={filter} counts={counts} onChange={setFilter} />
+        <ExpiraFilterChips
+          filter={filter}
+          counts={counts}
+          onChange={setFilter}
+        />
 
         <ExpiraTable
           domains={filteredDomains}
@@ -196,12 +243,24 @@ function ExpiraDashboardContent({
           emptyText={emptyText}
         />
 
-        <footer className="mt-4.5 flex flex-wrap items-center justify-between gap-3 text-[11.5px] text-expira-text-3">
-          <span>
-            Source ·{" "}
-            <code className="font-mono text-expira-text-2">{endpoint}</code>
+        <footer className="mt-4.5 flex w-full flex-wrap items-center justify-end gap-3 text-[11.5px] text-expira-text-3">
+          <span className="inline-flex items-center gap-1">
+            <span>Expira · Made with</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              className="size-4 shrink-0"
+              aria-hidden="true"
+            >
+              <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+            </svg>
+            <span>by iwa</span>
           </span>
-          <span>Expira · stateless domain expiry monitor</span>
         </footer>
       </div>
     </div>
