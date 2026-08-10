@@ -1,4 +1,4 @@
-FROM node:22-alpine AS web-builder
+FROM node:26-alpine AS web-builder
 
 WORKDIR /app/web
 
@@ -10,7 +10,7 @@ COPY web/ ./
 
 RUN npm run build
 
-FROM golang:1.25.5-alpine3.22 AS builder
+FROM golang:1.26.5-alpine3.24 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -23,7 +23,7 @@ COPY --from=web-builder /app/web/dist ./web/dist
 
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o main ./cmd/expira/main.go
 
-FROM alpine:3.22
+FROM alpine:3.24
 
 WORKDIR /app
 
