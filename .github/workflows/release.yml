@@ -2,7 +2,7 @@ name: Release flow on tag push
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: iwa/Expira
+  IMAGE_NAME: iwa/expira
 
 on:
   push:
