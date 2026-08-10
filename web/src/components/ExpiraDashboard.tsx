@@ -7,9 +7,9 @@ import { domainUrgency, type Domain, type DomainsPayload, type LoadState } from 
 export type { Domain, DomainStatus, DomainsPayload } from "./types";
 
 const LOAD_DOT_CLASSES: Record<LoadState, string> = {
-  live: "bg-expira-green",
-  loading: "bg-expira-text-3",
-  error: "bg-expira-red",
+  live: "bg-expira-green ring-expira-green/14",
+  loading: "bg-expira-text-3 ring-expira-gray/14",
+  error: "bg-expira-red ring-expira-red/14",
 };
 
 function relTime(date: Date | null) {
@@ -100,7 +100,7 @@ function ExpiraDashboardContent({
         <div className="flex items-center gap-3">
           <div className="inline-flex items-center gap-1.75 font-mono text-[11.5px] tracking-[.02em] text-expira-text-3">
             <span
-              className={`h-1.5 w-1.5 shrink-0 rounded-full ring-3 ring-expira-green/14 ${LOAD_DOT_CLASSES[load]}`}
+              className={`h-1.5 w-1.5 shrink-0 rounded-full ring-3 ${LOAD_DOT_CLASSES[load]}`}
             />
             {(load === "error" ? "error " : "checked ") + relTime(refreshedAt)}
           </div>
