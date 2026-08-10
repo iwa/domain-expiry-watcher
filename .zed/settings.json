@@ -1,0 +1,69 @@
+{
+  "languages": {
+    "TypeScript": {
+      "language_servers": [
+        "typescript-ls",
+        "oxlint",
+        "oxfmt",
+        "!vtsls",
+        "!typescript-language-server",
+        "!eslint",
+        "!biome",
+        "!prettier",
+        "...",
+      ],
+    },
+    "TSX": {
+      "language_servers": [
+        "typescript-ls",
+        "oxlint",
+        "oxfmt",
+        "!vtsls",
+        "!typescript-language-server",
+        "!eslint",
+        "!biome",
+        "!prettier",
+        "...",
+      ],
+    },
+    "JSON": {
+      "language_servers": [
+        "typescript-ls",
+        "oxlint",
+        "oxfmt",
+        "!vtsls",
+        "!typescript-language-server",
+        "!eslint",
+        "!biome",
+        "!prettier",
+        "...",
+      ],
+    },
+    "JSONC": {
+      "language_servers": [
+        "typescript-ls",
+        "oxlint",
+        "oxfmt",
+        "!vtsls",
+        "!typescript-language-server",
+        "!eslint",
+        "!biome",
+        "!prettier",
+        "...",
+      ],
+    },
+    "Astro": {
+      "language_servers": [
+        "typescript-ls",
+        "oxlint",
+        "oxfmt",
+        "!vtsls",
+        "!typescript-language-server",
+        "!eslint",
+        "!biome",
+        "!prettier",
+        "...",
+      ],
+    },
+  },
+}

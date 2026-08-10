@@ -16,10 +16,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "26.7.0"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: web
+        run: npm run build
+
       - name: Set up Go
         uses: actions/setup-go@v5.5.0
         with:
-          go-version: "1.24"
+          go-version: "1.26.5"
 
       - name: Build for Linux x86
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o expira-linux-x86 ./cmd/expira/main.go

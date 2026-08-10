@@ -17,10 +17,12 @@ type Server struct {
 
 func NewServer(addr string, store *state.DomainStore) *Server {
 	mux := http.NewServeMux()
+
+	mux.Handle("/", FrontendHandler())
+
 	mux.HandleFunc("/health", HealthHandler)
 	mux.HandleFunc("/status", StatusHandlerFactory(store))
 	mux.HandleFunc("/api/domains", DomainsAPIHandlerFactory(store))
-	// mux.HandleFunc("/", DomainsPageHandlerFactory(store))
 
 	return &Server{
 		server: &http.Server{

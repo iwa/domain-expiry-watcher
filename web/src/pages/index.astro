@@ -1,17 +1,39 @@
 ---
+import { Font } from "astro:assets";
+
 import "../styles/global.css";
+import ExpiraDashboard from "../components/ExpiraDashboard";
 ---
 
 <html lang="en">
     <head>
         <meta charset="utf-8" />
+
+        <link
+            rel="icon"
+            type="image/png"
+            href="/favicon-96x96.png"
+            sizes="96x96"
+        />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" href="/favicon.ico" />
-        <meta name="viewport" content="width=device-width" />
-        <meta name="generator" content={Astro.generator} />
-        <title>Astro</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Expira · domain expiry monitor" />
+        <title>Expira</title>
+
+        <Font cssVariable="--font-geist" />
+        <Font cssVariable="--font-geist-mono" />
     </head>
     <body>
-        <h1>Astro</h1>
+        <div
+            class="min-h-screen bg-expira-bg font-sans text-expira-text [background:radial-gradient(1100px_600px_at_80%_-10%,rgba(167,139,250,.07),transparent_60%),#131316]"
+        >
+            <ExpiraDashboard
+                client:only="react"
+                endpoint="/api/domains"
+                soonThreshold={30}
+            />
+        </div>
     </body>
 </html>
