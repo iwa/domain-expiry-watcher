@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 
 import react from "@astrojs/react";
 
@@ -21,4 +21,19 @@ export default defineConfig({
       },
     },
   },
+
+  fonts: [
+    {
+      provider: fontProviders.google(),
+      name: "Geist",
+      cssVariable: "--font-geist",
+      fallbacks: ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"]
+    },
+    {
+      provider: fontProviders.google(),
+      name: "Geist Mono",
+      cssVariable: "--font-geist-mono",
+      fallbacks: ["ui-monospace", "Menlo", "monospace"]
+    },
+  ],
 });
