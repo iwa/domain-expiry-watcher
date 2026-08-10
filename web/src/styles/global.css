@@ -1,58 +1,54 @@
 @import "tailwindcss";
 
 @theme {
-    --color-expira-bg: #131316;
-    --color-expira-purple: #a78bfa;
-    --color-expira-amber: #e6b65c;
-    --color-expira-red: #e8736a;
-    --color-expira-gray: #7c7c88;
-    --color-expira-green: #5fb98b;
-    --color-expira-text: #ededf1;
-    --color-expira-text-2: #9a9aa6;
-    --color-expira-text-3: #62626c;
-    --color-expira-border: #2b2b34;
-    --color-expira-table-border: #232329;
-    --color-expira-icon: #44444e;
-    --color-expira-focus: #8a76d8;
-    --color-expira-link-hover: #c4b5fd;
-    --color-expira-surface: #1a1a1f;
-    --color-expira-surface-2: #202027;
+  --color-expira-bg: #131316;
+  --color-expira-purple: #a78bfa;
+  --color-expira-amber: #e6b65c;
+  --color-expira-red: #e8736a;
+  --color-expira-gray: #7c7c88;
+  --color-expira-green: #5fb98b;
+  --color-expira-text: #ededf1;
+  --color-expira-text-2: #9a9aa6;
+  --color-expira-text-3: #62626c;
+  --color-expira-border: #2b2b34;
+  --color-expira-table-border: #232329;
+  --color-expira-icon: #44444e;
+  --color-expira-focus: #8a76d8;
+  --color-expira-link-hover: #c4b5fd;
+  --color-expira-surface: #1a1a1f;
+  --color-expira-surface-2: #202027;
 }
 
 @theme inline {
-    --font-sans: var(--font-geist);
-    --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
 }
 
 @layer base {
-    html,
-    body {
-        margin: 0;
-        background: var(--color-expira-bg);
-    }
+  html,
+  body {
+    margin: 0;
+    background: var(--color-expira-bg);
+  }
 
-    body {
-        -webkit-font-smoothing: antialiased;
-    }
+  body {
+    -webkit-font-smoothing: antialiased;
+  }
 
-    ::selection {
-        background: color-mix(
-            in oklab,
-            var(--color-expira-purple) 30%,
-            transparent
-        );
-    }
+  ::selection {
+    background: color-mix(in oklab, var(--color-expira-purple) 30%, transparent);
+  }
 
-    input::placeholder {
-        color: var(--color-expira-text-3);
-    }
+  input::placeholder {
+    color: var(--color-expira-text-3);
+  }
 
-    a {
-        color: var(--color-expira-purple);
-        text-decoration: none;
-    }
+  a {
+    color: var(--color-expira-purple);
+    text-decoration: none;
+  }
 
-    a:hover {
-        color: var(--color-expira-link-hover);
-    }
+  a:hover {
+    color: var(--color-expira-link-hover);
+  }
 }

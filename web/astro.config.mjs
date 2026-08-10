@@ -27,13 +27,13 @@ export default defineConfig({
       provider: fontProviders.google(),
       name: "Geist",
       cssVariable: "--font-geist",
-      fallbacks: ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"]
+      fallbacks: ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
     },
     {
       provider: fontProviders.google(),
       name: "Geist Mono",
       cssVariable: "--font-geist-mono",
-      fallbacks: ["ui-monospace", "Menlo", "monospace"]
+      fallbacks: ["ui-monospace", "Menlo", "monospace"],
     },
   ],
 });
