@@ -1,15 +1,21 @@
+WEB_DIR := web
+
 all: build
 
-build: go.mod
+web-build:
+	npm --prefix $(WEB_DIR) ci
+	npm --prefix $(WEB_DIR) run build
+
+build: web-build
 	go build -o bin/expira cmd/expira/main.go
 
-run:
+run: web-build
 	go run cmd/expira/main.go
 
 clean:
-	rm -r bin
+	rm -rf bin $(WEB_DIR)/dist
 
-test:
+test: web-build
 	go test ./...
 
-.PHONY: all build run clean test
+.PHONY: all build web-build run clean test
