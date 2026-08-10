@@ -10,7 +10,7 @@ import ExpiraDashboard from "../components/ExpiraDashboard";
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="generator" content={Astro.generator} />
-        <meta name="description" content="Expira · stateless domain expiry monitor" />
+        <meta name="description" content="Expira · domain expiry monitor" />
         <title>Expira</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,6 +20,14 @@ import ExpiraDashboard from "../components/ExpiraDashboard";
         />
     </head>
     <body>
-        <ExpiraDashboard client:only="react" endpoint="/api/domains" soonThreshold={30} />
+        <div
+            class="min-h-screen bg-expira-bg font-sans text-expira-text [background:radial-gradient(1100px_600px_at_80%_-10%,rgba(167,139,250,.07),transparent_60%),#131316]"
+        >
+            <ExpiraDashboard
+                client:only="react"
+                endpoint="/api/domains"
+                soonThreshold={30}
+            />
+        </div>
     </body>
 </html>
